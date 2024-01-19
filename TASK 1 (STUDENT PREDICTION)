@@ -1,0 +1,32 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_spl
+
+data = pd.read_csv('https://raw.githubusercontent.com/AdiPersonalWorks/Random/master/student_scores%20-%20student_scores.csv')
+print(data.head())
+
+
+X = data.iloc[:, :-1].values  # Hours
+y = data.iloc[:, 1].values    # Scores
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+regressor = LinearRegression()
+regressor.fit(X_train, y_train)
+
+line = regressor.coef_*X + regressor.intercept_
+
+plt.scatter(X, y)
+plt.plot(X, line)
+plt.xlabel('Hours studied')
+plt.ylabel('Percentage Score')
+plt.title('Hours vs Percentage')
+plt.show()
+
+y_pred = regressor.predict(X_test)
+df = pd.DataFrame({'Actual': y_test, 'Predicted': y_pred})
+print(df)
+hours = np.array([[9.25]])
+predicted_score = regressor.predict(hours)
+print('Predicted score for 9.25 hours/day of study: {}'.format(predicted_score[0]))
